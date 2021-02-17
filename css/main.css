@@ -1,0 +1,252 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    display: flex;
+    margin: 0px;
+}
+
+.content {
+    height: 1080px;
+    width: 680px;
+    background: linear-gradient(180deg, #FFFFFF 0%, #F2F5FA 100%);
+    padding-top: 374px;
+    padding-left: 140px;
+    padding-right: 140px;
+    z-index: 1;
+}
+
+.pinapple-background {
+    flex-grow: 1;
+    background-image: url('/img/image_summer.png');
+}
+
+.header {
+    position: absolute;
+    width: 480px;
+    height: 40px;
+    left: 100px;
+    top: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 2;
+}
+
+.pinapple-logo-container {
+    display: flex;
+    align-items: center;
+}
+
+#pinapple-logo-text {
+    margin-left: 15px;
+}
+
+.navigation-offset {
+    margin-top: 12px;
+}
+
+.navigation-links {
+    font-family: Arial;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 16px;
+    line-height: 28px;
+    color: #131821;
+    opacity: 0.5;
+}
+
+.navigation-links a {
+    margin-left: 30px;
+    text-decoration: none;
+}
+.navigation-links a:active {
+    color: inherit;
+}
+.navigation-links a:visited {
+    color: inherit;
+}
+
+.heading {
+    font-family: Georgia;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 32px;
+    line-height: 44px;
+    color: #131821;
+}
+
+.subheading {
+    font-family: Arial;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 16px;
+    line-height: 28px;
+    color: #6A707B;
+    padding-top: 15px;
+}
+
+.email-address-input-container {
+    display: flex;
+    margin-top: 50px;
+    margin-bottom: 53px;
+    position: relative;
+    left: -40px;
+    width: 663px;
+    border: 1px solid #E3E3E4;
+    border-left: #4066A5 solid 4px;
+}
+.email-address-input-container:focus-within {
+    box-shadow: 0px 30px 40px rgba(19, 24, 33, 0.06);
+    border-left: #4066A5 solid 4px;
+    outline: none;
+}
+.email-address-input-container:hover {
+    box-shadow: 0px 30px 40px rgba(19, 24, 33, 0.06);
+    border: 1px solid #4066A5;
+    border-left: #4066A5 solid 4px;
+}
+
+.email-address-submit-button {
+    width: 83px;
+    background-image: url('/img/ic_arrow.png');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: #FFFFFF;
+    border: none;
+    cursor: pointer;
+}
+.email-address-input-container:hover .email-address-submit-button {
+    background-image: url('/img/ic_arrow_hovered.png');
+}
+
+.email-address-input {
+    height: 70px;
+    background-color: #FFFFFF;
+    padding-left: 44px;
+    border: none;
+    font-size: 16px;
+    line-height: 24px;
+    color: #6A707B;
+    flex-grow: 1;
+}
+.email-address-input:focus {
+    outline: none;
+}
+.email-address-input-container:hover .email-address-input {
+    color: #131821;
+}
+
+.terms-of-service {
+    display: flex;
+    align-items: center;
+}
+
+#terms-of-service-checkbox {
+    width: 26px;
+    height: 26px;
+    background: #4066A5;
+    border-radius: 3px;
+}
+
+label[for="terms-of-service-checkbox"] {
+    font-family: Arial;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 16px;
+    line-height: 28px;
+    color: #6A707B;
+    margin-left: 15px;
+}
+
+label[for="terms-of-service-checkbox"] a {
+    color: #131821;
+}
+label[for="terms-of-service-checkbox"] a:active {
+    color: #233759
+}
+label[for="terms-of-service-checkbox"] a:hover {
+    color: #4066A5;
+}
+
+hr.division-line {
+    margin-top: 50px;
+    margin-bottom: 50px;
+    border-color: #E3E3E4;
+}
+
+.social-network-container {
+    display: flex;
+    justify-content: center;
+}
+
+.social-network {
+    width: 46px;
+    height: 46px;
+    border: 2px solid #E3E3E4;
+    border-radius: 23px;
+    margin-left: 20px;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.social-network-container a:first-of-type .social-network {
+    margin-left: 0px;
+}
+
+.facebook {
+    background-image: url('/img/ic_facebook_grey.png');
+}
+a:active .facebook {
+    background-image: url('/img/ic_facebook_white.png');
+    background-color: #2F4A80;
+    box-shadow: 0px 20px 40px rgba(19, 24, 33, 0.3);
+}
+a:hover .facebook {
+    background-image: url('/img/ic_facebook_white.png');
+    background-color: #4267B2;
+    box-shadow: 0px 20px 40px rgba(19, 24, 33, 0.3);
+}
+
+.instagram {
+    background-image: url('/img/ic_instagram_grey.png');
+}
+a:active .instagram {
+    background-image: url('/img/ic_instagram_white.png');
+    background-color: #8F2762;
+    box-shadow: 0px 20px 40px rgba(19, 24, 33, 0.3);
+}
+a:hover .instagram {
+    background-image: url('/img/ic_instagram_white.png');
+    background-color: #C13584;
+    box-shadow: 0px 20px 40px rgba(19, 24, 33, 0.3);
+}
+
+.twitter {
+    background-image: url('/img/ic_twitter_grey.png');
+}
+a:active .twitter {
+    background-image: url('/img/ic_twitter_white.png');
+    background-color: #177FBF;
+    box-shadow: 0px 20px 40px rgba(19, 24, 33, 0.3);
+}
+a:hover .twitter {
+    background-image: url('/img/ic_twitter_white.png');
+    background-color: #1DA1F2;
+    box-shadow: 0px 20px 40px rgba(19, 24, 33, 0.3);
+}
+
+.youtube {
+    background-image: url('/img/ic_youtube_grey.png');
+}
+a:active .youtube {
+    background-image: url('/img/ic_youtube_white.png');
+    background-color: #CC0000;
+    box-shadow: 0px 20px 40px rgba(19, 24, 33, 0.3);
+}
+a:hover .youtube {
+    background-image: url('/img/ic_youtube_white.png');
+    background-color: #FF0000;
+    box-shadow: 0px 20px 40px rgba(19, 24, 33, 0.3);
+}

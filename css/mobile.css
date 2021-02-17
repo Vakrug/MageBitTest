@@ -1,0 +1,79 @@
+@media only screen and (max-width: 600px) {
+    html {
+        height: 100%;
+    }
+    
+    body {
+        height: 100%;
+        flex-direction: column;
+    }
+    
+    .pinapple-background {
+        background-position: center;
+    }
+    
+    .header {
+        position: initial;
+        height: 66px;
+        width: initial;
+        left: initial;
+        top: initial;
+        background: #FFFFFF;
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+    
+    .content {
+        position: absolute;
+        width: 335px;
+        height: initial;
+        left: 20px;
+        top: 254px;
+        padding-top: 30px;
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+    
+    #pinapple-logo-text {
+        display: none;
+    }
+    
+    .navigation-offset {
+        margin-top: initial;
+    }
+    
+    .navigation-links {
+        font-size: 14px;
+        line-height: 26px;
+    }
+    
+    .heading {
+        font-size: 24px;
+        line-height: 34px;
+    }
+    
+    .subheading {
+        font-size: 14px;
+        line-height: 26px;
+    }
+    
+    .email-address-input-container {
+        position: initial;
+        margin-top: 20px;
+        margin-bottom: 20px;
+        width: 295px;
+    }
+    
+    .email-address-input {
+        height: 60px;
+        padding-left: 15px;
+    }
+    
+    .email-address-submit-button {
+        width: 40px;
+    }
+    
+    .social-network-container {
+        margin-bottom: 30px;
+    }
+}
