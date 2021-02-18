@@ -7,6 +7,11 @@
         <link href="css/main.css" rel="stylesheet" type="text/css"/>
         <link href="css/mobile.css" rel="stylesheet" type="text/css"/>
         <script src="https://unpkg.com/vue@next"></script>
+        <script
+            src="https://code.jquery.com/jquery-3.5.1.min.js"
+            integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="
+            crossorigin="anonymous">
+        </script>
     </head>
     <body>
         <div id="app">
@@ -115,9 +120,29 @@
                         
                         if (this.errors.length > 0) {
                             this.submit_button_disabled = true;
-                        } else {
-                            this.subscribed = true;
+                            return;
                         }
+                        
+                        this.submit_button_disabled = true; //Prevent multiple clicks
+                        var state = this;
+                        $.ajax({
+                            method: "POST",
+                            url: "/backend/subscribe.php",
+                            data: {
+                                email: this.email,
+                                tos_agreed: this.tos_agreed
+                            }
+                        }).done(function(result) {
+                            if (result['error'] === undefined || result['error'] === false) {
+                                state.subscribed = true;
+                            } else {
+                                state.errors = result['errorMessages'];
+                            }
+                            state.submit_button_disabled = false;
+                        }).fail(function(jqXHR, textStatus) {
+                            alert("Request failed: " + textStatus);
+                            state.submit_button_disabled = false;
+                        });
                     },
                     validEmail: function(email) {
                         var re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
