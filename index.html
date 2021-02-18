@@ -124,7 +124,7 @@
                         return re.test(email);
                     },
                     emailFromColombia: function(email) {
-                        return email.endsWith('.co');
+                        return email.toLowerCase().endsWith('.co');
                     },
                     enableSubmitButton() {
                         this.submit_button_disabled = false;
