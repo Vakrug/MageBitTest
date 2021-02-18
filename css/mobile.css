@@ -5,6 +5,10 @@
     
     body {
         height: 100%;
+    }
+    
+    #app {
+        height: 100%;
         flex-direction: column;
     }
     
@@ -32,6 +36,9 @@
         padding-top: 30px;
         padding-left: 20px;
         padding-right: 20px;
+    }
+    .content.padding-for-subscribed {
+        padding-top: 32px;
     }
     
     #pinapple-logo-text {
@@ -75,5 +82,9 @@
     
     .social-network-container {
         margin-bottom: 30px;
+    }
+    
+    .cup {
+        margin-bottom: 39px;
     }
 }

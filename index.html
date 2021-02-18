@@ -6,62 +6,133 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="css/main.css" rel="stylesheet" type="text/css"/>
         <link href="css/mobile.css" rel="stylesheet" type="text/css"/>
+        <script src="https://unpkg.com/vue@next"></script>
     </head>
     <body>
-        <div class="content">
-            <div class="heading">
-                Subscribe to newsletter
+        <div id="app">
+            <div class="content" :class="{'padding-for-subscribed': subscribed}">
+                <template v-if="subscribed">
+                    <img src="/img/Cup.png" alt="" class="cup"/>
+                    <div class="heading">
+                        Thanks for subscribing!
+                    </div>
+                    <div class="subheading">
+                        You have successfully subscribed to our email listing. Check your email for the discount code.
+                    </div>
+                </template>
+                <template v-else>
+                    <div class="heading">
+                        Subscribe to newsletter
+                    </div>
+                    <div class="subheading">
+                        Subscribe to our newsletter and get 10% discount on pineapple glasses.
+                    </div>
+                    <form @submit.prevent="subscribe">
+                        <div class="email-address-input-container">
+                            <input class="email-address-input" type="text" placeholder="Type your email address here…" v-model="email" @input="enableSubmitButton" />
+                            <input type="submit" class="email-address-submit-button" value="&nbsp;" v-bind:disabled="submit_button_disabled" />
+                        </div>
+                        <ul class="error-list" v-if="errors.length > 0">
+                            <li v-for="error in errors">
+                                {{ error }}
+                            </li>
+                        </ul>
+                        <div class="terms-of-service">
+                            <input type="checkbox" id="terms-of-service-checkbox" v-model="tos_agreed" @change="enableSubmitButton" />
+                            <label for="terms-of-service-checkbox">I agree to <a href="#">terms of service</a></label>
+                        </div>
+                    </form>
+                </template>
+                <hr class="division-line" />
+                <nav class="social-network-container">
+                    <a href="#">
+                        <div class="social-network facebook">
+
+                        </div>
+                    </a>
+                    <a href="#">
+                        <div class="social-network instagram">
+
+                        </div>
+                    </a>
+                    <a href="#">
+                        <div class="social-network twitter">
+
+                        </div>
+                    </a>
+                    <a href="#">
+                        <div class="social-network youtube">
+
+                        </div>
+                    </a>
+                </nav>
             </div>
-            <div class="subheading">
-                Subscribe to our newsletter and get 10% discount on pineapple glasses.
-            </div>
-            <form>
-                <div class="email-address-input-container">
-                    <input class="email-address-input" type="text" placeholder="Type your email address here…" />
-                    <input type="submit" class="email-address-submit-button" value="" />
+            <div class="header">
+                <div class="pinapple-logo-container">
+                    <img src="/img/Union.png" alt=""/>
+                    <img id="pinapple-logo-text" class="navigation-offset" src="/img/pineapple.png" alt=""/>
                 </div>
-                <div class="terms-of-service">
-                    <input type="checkbox" id="terms-of-service-checkbox" />
-                    <label for="terms-of-service-checkbox">I agree to <a href="#">terms of service</a></label>
-                </div>
-            </form>
-            <hr class="division-line" />
-            <nav class="social-network-container">
-                <a href="#">
-                    <div class="social-network facebook">
-
-                    </div>
-                </a>
-                <a href="#">
-                    <div class="social-network instagram">
-                    
-                    </div>
-                </a>
-                <a href="#">
-                    <div class="social-network twitter">
-
-                    </div>
-                </a>
-                <a href="#">
-                    <div class="social-network youtube">
-
-                    </div>
-                </a>
-            </nav>
-        </div>
-        <div class="header">
-            <div class="pinapple-logo-container">
-                <img src="img/Union.png" alt=""/>
-                <img id="pinapple-logo-text" class="navigation-offset" src="img/pineapple.png" alt=""/>
+                <nav class="navigation-links navigation-offset">
+                    <a href="#">About</a>
+                    <a href="#">How it works</a>
+                    <a href="#">Contact</a>
+                </nav>
             </div>
-            <nav class="navigation-links navigation-offset">
-                <a href="#">About</a>
-                <a href="#">How it works</a>
-                <a href="#">Contact</a>
-            </nav>
+            <div class="pinapple-background">
+
+            </div>
         </div>
-        <div class="pinapple-background">
+        
+        <script type="text/javascript">
+            const app = Vue.createApp({
+                data() {
+                    return {
+                        email: '',
+                        tos_agreed: false,
+                        errors: [],
+                        submit_button_disabled: false,
+                        subscribed: false
+                    };
+                },
+                methods: {
+                    subscribe() {
+                        this.errors = [];
+                        if (this.email.length === 0) {
+                            this.errors.push('Email address is required');
+                        } else {
+                            const emailIsValid = this.validEmail(this.email);
+                            if (!emailIsValid) {
+                                this.errors.push('Please provide a valid e-mail address');
+                            } else {
+                                if (this.emailFromColombia(this.email)) {
+                                    this.errors.push('We are not accepting subscriptions from Colombia emails');
+                                }
+                            }
+                        }
+                        if (!this.tos_agreed) {
+                            this.errors.push('You must accept the terms and conditions');
+                        }
+                        
+                        if (this.errors.length > 0) {
+                            this.submit_button_disabled = true;
+                        } else {
+                            this.subscribed = true;
+                        }
+                    },
+                    validEmail: function(email) {
+                        var re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+                        return re.test(email);
+                    },
+                    emailFromColombia: function(email) {
+                        return email.endsWith('.co');
+                    },
+                    enableSubmitButton() {
+                        this.submit_button_disabled = false;
+                    }
+                }
+            });
             
-        </div>
+            const vm = app.mount('#app');
+        </script>
     </body>
 </html>
