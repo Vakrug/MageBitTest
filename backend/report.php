@@ -1,70 +1,25 @@
 <?php
 
-require_once 'config.php';
+require_once 'subscription.class.php';
+require_once 'filter.class.php';
 
-/* @var $config array */
-
-$dbh = new PDO('mysql:host=' . $config['host'] . ';dbname=' . $config['dbname'], $config['user'], $config['password']);
+$subscription = new subscription();
 
 $IdToDelete = filter_input(INPUT_POST, 'Id', FILTER_VALIDATE_INT);
 if ($IdToDelete) {
-    $sql = 'delete from subscriptions where Id = :Id';
-    $sth = $dbh->prepare($sql);
-    $sth->execute([
-        ':Id' => $IdToDelete
-    ]);
+    $subscription->delete($IdToDelete);
 }
 
 $sortfield = filter_input(INPUT_GET, 'sortfield');
-if (!$sortfield || !in_array($sortfield, ['Email', 'AddedAt'])) {
-    $sortfield = 'AddedAt';
-}
-
 $sortorder = filter_input(INPUT_GET, 'sortorder');
-if (!$sortorder || !in_array($sortorder, ['asc', 'desc'])) {
-    $sortorder = 'asc';
-}
-
-$whereKeyword = '';
-$whereParts = [];
-$executeParams = [];
-
 $providerfilter = filter_input(INPUT_GET, 'providerfilter');
-if ($providerfilter) {
-    $whereKeyword = ' where ';
-    $whereParts[] = ' Provider = :provider ';
-    $executeParams[':provider'] = $providerfilter;
-}
-
 $emailfilter = filter_input(INPUT_GET, 'emailfilter');
-if ($emailfilter) {
-    $whereKeyword = ' where ';
-    $whereParts[] = ' Email like :emailfilter ';
-    $executeParams[':emailfilter'] = '%' . $emailfilter . '%';
-}
+$paginationblock = filter_input(INPUT_GET, 'paginationblock', FILTER_VALIDATE_INT);
 
-$paginationblock = filter_input(INPUT_GET, 'paginationblock');
-if (!$paginationblock) {
-    $paginationblock = 0;
-}
+$filter = new filter($sortfield, $sortorder, $providerfilter, $emailfilter, $paginationblock);
+$rows = $subscription->subscriptions($filter);
 
-$sql = 'select Id, Email, AddedAt from subscriptions ' . 
-        $whereKeyword . implode(' and ', $whereParts) .
-        ' order by ' . $sortfield . ' ' . $sortorder .
-        ' limit ' . $paginationblock * $config['pagination'] . ', ' . ($config['pagination'] + 1); //+1 to check if there are more rows next
-$sth = $dbh->prepare($sql);
-$sth->execute($executeParams);
-$rows = $sth->fetchAll();
-$hasMoreRows = false;
-if (count($rows) == $config['pagination'] + 1) {
-    $hasMoreRows = true;
-    array_pop($rows); //Remove that last element. It served its purpose.
-}
-
-$sql = 'select Provider from subscriptions group by Provider order by Provider asc';
-$sth = $dbh->prepare($sql);
-$sth->execute();
-$providerRows = $sth->fetchAll();
+$providers = $subscription->providers();
 ?>
 
 <!DOCTYPE html>
@@ -84,22 +39,22 @@ $providerRows = $sth->fetchAll();
             <input id="sortfield" type="hidden" name="sortfield" value="<?= $sortfield ?>" />
             <input id="sortorder" type="hidden" name="sortorder" value="<?= $sortorder ?>" />
             <input type="hidden" name="providerfilter" value="<?= $providerfilter ?>" />
-            <input id="paginationblock" type="hidden" name="paginationblock" value="<?= $paginationblock ?>" />
+            <input id="paginationblock" type="hidden" name="paginationblock" value="<?= $filter->paginationblock ?>" />
             <div>
                 <input type="text" name="emailfilter" value="<?= $emailfilter ?>" />
                 <button type="submit" value="">Filter</button>
             </div>
             
             <div>
-                <?php foreach($providerRows as $providerRow): ?>
+                <?php foreach($providers as $provider): ?>
                 <button
                     type="submit"
                     name="providerfilter"
-                    value="<?= $providerRow['Provider'] == $providerfilter ? '' : $providerRow['Provider'] ?>"
-                    <?= $providerRow['Provider'] == $providerfilter ? 'class="active-filter"' : '' ?>
+                    value="<?= $provider == $providerfilter ? '' : $provider ?>"
+                    <?= $provider == $providerfilter ? 'class="active-filter"' : '' ?>
                     onclick="ResetPagination();"
                 >
-                    <?= $providerRow['Provider'] ?>
+                    <?= $provider ?>
                 </button>
                 <?php endforeach; ?>
             </div>
@@ -111,15 +66,15 @@ $providerRows = $sth->fetchAll();
                             Email
                             <button
                                 type="button"
-                                onclick="SetSortAndSubmit('Email', 'asc')"
-                                <?= $sortfield == 'Email' && $sortorder == 'asc' ? 'class="active-filter"' : '' ?>
+                                onclick="SetSortAndSubmit('<?= filter::SORT_FIELD_EMAIL ?>', '<?= filter::SORT_ORDER_ASC ?>')"
+                                <?= $filter->sortfield == filter::SORT_FIELD_EMAIL && $filter->sortorder == filter::SORT_ORDER_ASC ? 'class="active-filter"' : '' ?>
                             >
                                 ^
                             </button>
                             <button
                                 type="button" 
-                                onclick="SetSortAndSubmit('Email', 'desc')" 
-                                <?= $sortfield == 'Email' && $sortorder == 'desc' ? 'class="active-filter"' : '' ?>
+                                onclick="SetSortAndSubmit('<?= filter::SORT_FIELD_EMAIL ?>', '<?= filter::SORT_ORDER_DESC ?>')" 
+                                <?= $filter->sortfield == filter::SORT_FIELD_EMAIL && $filter->sortorder == filter::SORT_ORDER_DESC ? 'class="active-filter"' : '' ?>
                             >
                                 V
                             </button>
@@ -128,15 +83,15 @@ $providerRows = $sth->fetchAll();
                             AddedAt
                             <button
                                 type="button"
-                                onclick="SetSortAndSubmit('AddedAt', 'asc')"
-                                <?= $sortfield == 'AddedAt' && $sortorder == 'asc' ? 'class="active-filter"' : '' ?>
+                                onclick="SetSortAndSubmit('<?= filter::SORT_FIELD_ADDEDAT ?>', '<?= filter::SORT_ORDER_ASC ?>')"
+                                <?= $filter->sortfield == filter::SORT_FIELD_ADDEDAT && $filter->sortorder == filter::SORT_ORDER_ASC ? 'class="active-filter"' : '' ?>
                             >
                                 ^
                             </button>
                             <button
                                 type="button"
-                                onclick="SetSortAndSubmit('AddedAt', 'desc')"
-                                <?= $sortfield == 'AddedAt' && $sortorder == 'desc' ? 'class="active-filter"' : '' ?>
+                                onclick="SetSortAndSubmit('<?= filter::SORT_FIELD_ADDEDAT ?>', '<?= filter::SORT_ORDER_DESC ?>')"
+                                <?= $filter->sortfield == filter::SORT_FIELD_ADDEDAT && $filter->sortorder == filter::SORT_ORDER_DESC ? 'class="active-filter"' : '' ?>
                             >
                                 V
                             </button>
@@ -161,8 +116,8 @@ $providerRows = $sth->fetchAll();
                 </tbody>
             </table>
             <div>
-                <button type="submit" name="paginationblock" value="<?= $paginationblock - 1 ?>" <?= $paginationblock == 0 ? 'disabled=disabled' : ''?>>&#60;</button>
-                <button type="submit" name="paginationblock" value="<?= $paginationblock + 1 ?>" <?= $hasMoreRows ? '' : 'disabled=disabled'?>>&#62;</button>
+                <button type="submit" name="paginationblock" value="<?= $filter->paginationblock - 1 ?>" <?= $filter->paginationblock == 0 ? 'disabled=disabled' : ''?>>&#60;</button>
+                <button type="submit" name="paginationblock" value="<?= $filter->paginationblock + 1 ?>" <?= $subscription->hasMoreRows ? '' : 'disabled=disabled'?>>&#62;</button>
             </div>
         </form>
         <form id="exportform" method="POST" action="/backend/export.php" target="__blank">

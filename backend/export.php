@@ -1,11 +1,6 @@
 <?php
 
-require_once 'config.php';
-require_once 'functions.php';
-
-/* @var $config array */
-
-$dbh = new PDO('mysql:host=' . $config['host'] . ';dbname=' . $config['dbname'], $config['user'], $config['password']);
+require_once 'subscription.class.php';
 
 $IdsToExport = $_POST['Id'];
 if (!isset($IdsToExport) || !$IdsToExport || !is_array($IdsToExport)) {
@@ -13,10 +8,8 @@ if (!isset($IdsToExport) || !$IdsToExport || !is_array($IdsToExport)) {
     return;
 }
 
-$sql = 'select Email, AddedAt from subscriptions where Id in (' . implode(',', $IdsToExport) . ')';
-$sth = $dbh->prepare($sql);
-$sth->execute();
-$rows = $sth->fetchAll(PDO::FETCH_ASSOC);
+$subscription = new subscription();
+$rows = $subscription->forExport($IdsToExport);
 
 download_send_headers("Email_Subscriptions" . ".csv");
 echo array2csv($rows);
